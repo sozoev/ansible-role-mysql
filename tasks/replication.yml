@@ -15,6 +15,7 @@
 - name: Check slave replication status.
   mysql_replication:
     mode: getslave
+    login_host: "{{ mysql_replication_user.host }}"
     login_user: "{{ mysql_replication_user.name }}"
     login_password: "{{ mysql_replication_user.password }}"
   ignore_errors: true
@@ -26,7 +27,7 @@
 
 - name: Check master replication status.
   mysql_replication: mode=getmaster
-  delegate_to: "{{ mysql_replication_master }}"
+  delegate_to: "{{ ansible_user }}@{{ mysql_replication_master }}"
   register: master
   when:
     - (slave.Is_Slave is defined and not slave.Is_Slave) or (slave.Is_Slave is not defined and slave is failed)
